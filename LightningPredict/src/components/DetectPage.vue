@@ -20,11 +20,11 @@
         <h1 id="syc-with-select">{{stationName}}</h1>
         <div id="detail-message-show"></div>
         <div class="buttons">
-          <button id="level-1">一级预警</button>
-          <button id="level-2">二级预警</button>
-          <button id="level-3">三级预警</button>
-          <button id="obstacle-of-head">探头故障</button>
-          <button id="internet-high">网络高能</button>
+          <div id="level-1">一级预警</div>
+          <div id="level-2">二级预警</div>
+          <div id="level-3">三级预警</div>
+          <div id="obstacle-of-head">探头故障</div>
+          <div id="internet-high">网络高能</div>
         </div>
         <Tabs :animated="false" id="down-table">
           <TabPane :label="'预警信息查询'">

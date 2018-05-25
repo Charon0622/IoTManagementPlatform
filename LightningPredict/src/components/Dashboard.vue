@@ -1,10 +1,8 @@
 <template>
-  <div class="layout background-size">
-    <Layout class="main-size">
+  <div>
       <Header>
-        <Menu mode="horizontal" active-name="1" @on-select="dealSelect">
+        <Menu mode="horizontal" @on-select="dealSelect">
           <div class="demo-avatar user-div">
-            <Avatar class="user-avatar">Y</Avatar>
             <span class="greeting">Hello, Ygritte</span>
           </div>
           <div class="layout-nav">
@@ -15,43 +13,126 @@
           </div>
         </Menu>
       </Header>
-      <Layout class="main-size">
-        <Sider hide-trigger :style="{background: '#fff'}" class="sider-bar">
-          <Menu active-name="1-2" theme="light" width="auto" :open-names="['1']">
-            <Submenu name="1">
-              <template slot="title">
-                <Icon type="ios-navigate"></Icon>
-                Item 1
-              </template>
-              <MenuItem name="1-1">Option 1</MenuItem>
-              <MenuItem name="1-2">Option 2</MenuItem>
-            </Submenu>
-            <Submenu name="2">
-              <template slot="title">
-                <Icon type="ios-keypad"></Icon>
-                Item 2
-              </template>
-              <MenuItem name="2-1">Option 1</MenuItem>
-              <MenuItem name="2-2">Option 2</MenuItem>
-            </Submenu>
-            <Submenu name="3">
-              <template slot="title">
-                <Icon type="ios-analytics"></Icon>
-                Item 3
-              </template>
-              <MenuItem name="3-1">Option 1</MenuItem>
-              <MenuItem name="3-2">Option 2</MenuItem>
-            </Submenu>
-          </Menu>
-        </Sider>
-        <Layout :style="{padding: '0 24px 24px'}">
-          <i-input class="dashboard-search">
-            <i-button slot="append" icon="ios-search"></i-button>
-          </i-input>
-          <graph></graph>
-        </Layout>
-      </Layout>
-    </Layout>
+     <Row>
+       <Col span="22" offset="1">
+      <Tabs value="name1" type="card" class="a">
+        <TabPane label="大气电场实时曲线监测" name="name1">
+          <Row>
+            <Col span="8">
+          <Row class="c">
+            <Col span="5">
+              <div class="b">首选站点</div>
+            </Col>
+            <Col span="5" >
+            <Select v-model="model1" style="width:100px" placement="top"	>
+              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            </Select>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="24">
+            <Card dis-hover>
+              <Row>
+                <Col span="18">
+                <Card dis-hover>
+                  <p>Content of card</p>
+                  <p>Content of card</p>
+                  <p>Content of card</p>
+                </Card>
+                </Col>
+                <Col span="4" offset="2">
+                <div id="level-1">一级预警</div>
+                <div id="level-2">二级预警</div>
+                <div id="level-3">三级预警</div>
+                <div id="obstacle-of-head">探头故障</div>
+                <div id="internet-high">网络高能</div>
+                </Col>
+              </Row>
+            </Card>
+            </Col>
+          </Row>
+            <Row>
+              <Col>
+              <Tabs type="card" class="d">
+                <TabPane label="预警信息查询">
+                  <Table :columns="columns1" :data="data1" size="small"></Table>
+                </TabPane>
+                <TabPane label="状态信息">
+                  <Card dis-hover>
+                    <Row>
+                      <Col span="12">
+                      网络状态：
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col span="12">
+                      运行状态：
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col span="12">
+                      IO状态：
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col span="12">
+                      最后上线：
+                      </Col>
+                    </Row>
+                  </Card>
+                </TabPane>
+                <TabPane label="基本信息">
+                  <Card dis-hover>
+                    <Row>
+                      <Col span="12">
+                      网络状态：
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col span="12">
+                      名称：
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col span="12">
+                      代码：
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col span="12">
+                      经纬度：
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col span="12">
+                      区域名：
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col span="12">
+                      地区名：
+                      </Col>
+                    </Row>
+                  </Card>
+                </TabPane>
+              </Tabs>
+              </Col>
+            </Row>
+            </Col>
+          </Row>
+        </TabPane>
+        <TabPane label="列表监测与设置" name="name2">
+          <Tabs type="card">
+            <TabPane label="大气电场实时监测列表"><Table :columns="columns2" :data="data2"></Table></TabPane>
+            <TabPane label="雷达系统参数设置">标签二的内容</TabPane>
+            <TabPane label="闪电定位系统设置">标签三的内容</TabPane>
+            <TabPane label="网络化预警参数设置">标签四的内容</TabPane>
+          </Tabs>
+        </TabPane>
+        <TabPane label="地图监测" name="name3"></TabPane>
+      </Tabs>
+       </Col>
+     </Row>
   </div>
 </template>
 
@@ -63,6 +144,85 @@
   export default {
     components: {Graph},
     name: "dashboard",
+    data () {
+      return {
+        cityList: [
+          {
+            value: 'New York',
+            label: 'New York'
+          },
+          {
+            value: 'London',
+            label: 'London'
+          },
+          {
+            value: 'Sydney',
+            label: 'Sydney'
+          },
+          {
+            value: 'Ottawa',
+            label: 'Ottawa'
+          },
+        ],
+        model1: '',
+        columns1: [
+          {
+            title: 'Name',
+            key: 'name'
+          },
+          {
+            title: 'Date',
+            key: 'date'
+          }
+        ],
+        columns2: [
+          {
+            title: 'Name',
+            key: 'name'
+          },
+          {
+            title: 'Date',
+            key: 'date'
+          }
+        ],
+        data1: [
+          {
+            name: 'John Brown',
+            date: '2016-10-03'
+          },
+          {
+            name: 'Jim Green',
+            date: '2016-10-01'
+          },
+          {
+            name: 'Joe Black',
+            date: '2016-10-02'
+          },
+          {
+            name: 'Jon Snow',
+            date: '2016-10-04'
+          }
+        ],
+        data2: [
+          {
+            name: 'John Brown',
+            date: '2016-10-03'
+          },
+          {
+            name: 'Jim Green',
+            date: '2016-10-01'
+          },
+          {
+            name: 'Joe Black',
+            date: '2016-10-02'
+          },
+          {
+            name: 'Jon Snow',
+            date: '2016-10-04'
+          }
+        ]
+      }
+    },
     methods: {
       dealSelect (name) {
         switch (name) {
@@ -99,8 +259,7 @@
 
 <style scoped>
   .layout{
-    border: 1px solid #d7dde4;
-    background: #f5f7f9;
+    background: #fff;
     position: relative;
     border-radius: 4px;
     overflow: hidden;
@@ -137,6 +296,7 @@
     position:absolute;
     width: 100%;
     height: 100%;
+    background-color: #fff;
   }
   .main-size{
     height: 100%;
@@ -147,4 +307,43 @@
     width: 200px;
     align-self: flex-end;
   }
+  .a{
+    background-color: #fff;
+    margin-top: 10px;
+  }
+  .b{
+    margin-bottom: -10px;
+    font-size: 14px;
+    margin-top: 5px
+  }
+
+  .c{
+    margin-bottom: 10px;
+    margin-left: -5px;
+  }
+  .d{
+    margin-top: 15px;
+  }
+
+  #level-1
+  {
+    background-color:yellow;
+  }
+  #level-2
+  {
+    background-color:#ffb90f;
+  }
+  #level-3
+  {
+    background-color:red;
+  }
+  #obstacle-of-head
+  {
+    background-color:#f7f7f7;
+  }
+  #internet-high
+  {
+    background-color:#d6d6d6;
+  }
+
 </style>
