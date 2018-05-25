@@ -18,7 +18,7 @@ public class TerminalController {
         CassandraConnector connector = new CassandraConnector();
         connector.connect("10.60.38.173", 9042);
         connector.createKeyspace("ThunderAnalysis", "SimpleStrategy", 1);
-        List<Terminal> terminals = connector.getAllData();
+        List<Terminal> terminals = connector.getTerminalData();
         connector.close();
         return terminals;
     }
