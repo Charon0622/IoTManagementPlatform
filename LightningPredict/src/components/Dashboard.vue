@@ -1,35 +1,24 @@
 <template>
   <div>
-      <Header>
-        <Menu mode="horizontal" @on-select="dealSelect">
-          <div class="demo-avatar user-div">
-            <span class="greeting">Hello, Ygritte</span>
-          </div>
-          <div class="layout-nav">
-            <MenuItem name="logout">
-              <Icon type="person"></Icon>
-              Logout
-            </MenuItem>
-          </div>
-        </Menu>
-      </Header>
+    <my_header></my_header>
      <Row>
-       <Col span="22" offset="1">
-      <Tabs value="name1" type="card" class="a">
+       <my_sider></my_sider>
+       <Col span="18" offset="1">
+        <Tabs :animated="false" value="name1" type="card" class="a">
         <TabPane label="大气电场实时曲线监测" name="name1">
           <Row>
-            <Col span="8">
-          <Row class="c">
+            <Col span="9">
+              <Row class="c">
             <Col span="5">
               <div class="b">首选站点</div>
             </Col>
-            <Col span="5" >
+            <Col span="8" >
             <Select v-model="model1" style="width:100px" placement="top"	>
               <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
             </Col>
           </Row>
-          <Row>
+              <Row>
             <Col span="24">
             <Card dis-hover>
               <Row>
@@ -51,9 +40,9 @@
             </Card>
             </Col>
           </Row>
-            <Row>
+              <Row>
               <Col>
-              <Tabs type="card" class="d">
+              <Tabs :animated="false" type="card" class="d">
                 <TabPane label="预警信息查询">
                   <Table :columns="columns1" :data="data1" size="small"></Table>
                 </TabPane>
@@ -119,10 +108,13 @@
               </Col>
             </Row>
             </Col>
+            <Col span="14" offset="1">
+            <Graph></Graph>
+            </Col>
           </Row>
         </TabPane>
         <TabPane label="列表监测与设置" name="name2">
-          <Tabs type="card">
+          <Tabs :animated="false" type="card">
             <TabPane label="大气电场实时监测列表"><Table :columns="columns2" :data="data2"></Table></TabPane>
             <TabPane label="雷达系统参数设置">标签二的内容</TabPane>
             <TabPane label="闪电定位系统设置">标签三的内容</TabPane>
@@ -138,12 +130,14 @@
 
 <script>
   import graph from "./Graph.vue"
-  import Graph from "./Graph";
-  import { logout, isLogin } from '../service/apis'
-
+  import Graph from "./Graph"
+  import my_header from "./Header.vue"
+  import my_sider from "./Sider.vue"
+  import { logout, isLogin, terminal2 } from '../service/apis'
   export default {
-    components: {Graph},
+    components: {Graph, my_header, my_sider},
     name: "dashboard",
+
     data () {
       return {
         cityList: [
@@ -177,12 +171,64 @@
         ],
         columns2: [
           {
-            title: 'Name',
-            key: 'name'
+            title: 'terminal_description',
+            key: 'terminal_description'
           },
           {
-            title: 'Date',
-            key: 'date'
+            title: 'resistance',
+            key: 'resistance'
+          },
+          {
+            title: 'earthing',
+            key: 'earthing'
+          },
+          {
+            title: 'kk',
+            key: 'kk'
+          },
+          {
+            title: 'humidity',
+            key: 'humidity'
+          },
+          {
+            title: 'ib',
+            key: 'ib'
+          },
+          {
+            title: 'ub',
+            key: 'ub'
+          },
+          {
+            title: 'ia',
+            key: 'ia'
+          },
+          {
+            title: 'ua',
+            key: 'ua'
+          },
+          {
+            title: 'irA',
+            key: 'irA'
+          },
+          {
+            title: 'irB',
+            key: 'irB'
+          },
+          {
+            title: 'irC',
+            key: 'irC'
+          },
+          {
+            title: 'spd',
+            key: 'spd'
+          },
+          {
+            title: 'uc',
+            key: 'uc'
+          },
+          {
+            title: 'ic',
+            key: 'ic'
           }
         ],
         data1: [
@@ -203,24 +249,7 @@
             date: '2016-10-04'
           }
         ],
-        data2: [
-          {
-            name: 'John Brown',
-            date: '2016-10-03'
-          },
-          {
-            name: 'Jim Green',
-            date: '2016-10-01'
-          },
-          {
-            name: 'Joe Black',
-            date: '2016-10-02'
-          },
-          {
-            name: 'Jon Snow',
-            date: '2016-10-04'
-          }
-        ]
+        data2: []
       }
     },
     methods: {
@@ -242,7 +271,19 @@
         }).catch(err => {
           console.error(err)
         })
+      },
+      getTerminalData(){
+        terminal2().then(res=>{
+          console.log(res)
+          this.data2 = res
+          }
+        ).catch(err => {
+          console.error(err)
+        })
       }
+    },
+    mounted () {
+      this.getTerminalData()
     },
     created () {
       console.log(this.$session.get('groups'))
@@ -258,55 +299,7 @@
 </script>
 
 <style scoped>
-  .layout{
-    background: #fff;
-    position: relative;
-    border-radius: 4px;
-    overflow: hidden;
-    height: 100%;
-  }
 
-  .layout-nav{
-    margin: 0 auto;
-    margin-right: 20px;
-    float: right;
-  }
-  .ivu-layout-header{
-    background: #ffffff;
-  }
-  .mybread{
-    float: left;
-  }
-  .ivu-menu-horizontal {
-    height: 64px;
-    line-height: 64px;
-  }
-  .user-avatar{
-    color: #f56a00;
-    background-color: #fde3cf;
-  }
-  .user-div{
-    float: left;
-    top:50%;
-  }
-  .greeting{
-    margin-left: 10px;
-  }
-  .background-size{
-    position:absolute;
-    width: 100%;
-    height: 100%;
-    background-color: #fff;
-  }
-  .main-size{
-    height: 100%;
-  }
-  .dashboard-search{
-    margin-top: 10px;
-    margin-bottom: 10px;
-    width: 200px;
-    align-self: flex-end;
-  }
   .a{
     background-color: #fff;
     margin-top: 10px;
