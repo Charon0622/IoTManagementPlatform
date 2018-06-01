@@ -109,13 +109,15 @@
             </Row>
             </Col>
             <Col span="14" offset="1">
-            <Graph></Graph>
             </Col>
           </Row>
         </TabPane>
         <TabPane label="列表监测与设置" name="name2">
           <Tabs :animated="false" type="card">
-            <TabPane label="大气电场实时监测列表"><Table :columns="columns2" :data="data2"></Table></TabPane>
+            <TabPane label="大气电场实时监测列表">
+              <Table :columns="columns2" :data="data2"></Table>
+              <Graph class="e"></Graph>
+            </TabPane>
             <TabPane label="雷达系统参数设置">标签二的内容</TabPane>
             <TabPane label="闪电定位系统设置">标签三的内容</TabPane>
             <TabPane label="网络化预警参数设置">标签四的内容</TabPane>
@@ -316,6 +318,9 @@
   }
   .d{
     margin-top: 15px;
+  }
+  .e{
+    margin-top: 20px;
   }
 
   #level-1
