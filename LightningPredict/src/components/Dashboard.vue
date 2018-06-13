@@ -1,3 +1,6 @@
+
+
+
 <template>
   <div>
     <my_header></my_header>
@@ -116,7 +119,12 @@
           <Tabs :animated="false" type="card">
             <TabPane label="大气电场实时监测列表">
               <Table :columns="columns2" :data="data2"></Table>
-              <Graph class="e"></Graph>
+              <Row>
+                <div>
+              <vue-highcharts :options="options" ref="lineCharts"></vue-highcharts>
+                </div>
+              </Row>
+              <Graph v-bind:data0="data0" class="e"></Graph>
             </TabPane>
             <TabPane label="雷达系统参数设置">标签二的内容</TabPane>
             <TabPane label="闪电定位系统设置">标签三的内容</TabPane>
@@ -131,17 +139,52 @@
 </template>
 
 <script>
-  import graph from "./Graph.vue"
-  import Graph from "./Graph"
+  import VueHighcharts from 'vue2-highcharts'
+  //import graph from "./Graph.vue"
+  //import Graph from "./Graph"
   import my_header from "./Header.vue"
   import my_sider from "./Sider.vue"
-  import { logout, isLogin, terminal2 } from '../service/apis'
+  import { logout, isLogin, terminal2, terminal } from '../service/apis'
   export default {
-    components: {Graph, my_header, my_sider},
+    components: {VueHighcharts,  my_header, my_sider},
     name: "dashboard",
 
     data () {
       return {
+        date:[],
+        peak:[],
+        options: {
+          title: {
+            text: 'Monthly Average Temperature',
+            x: -20 //center
+          },
+          xAxis: {
+            categories: this.date
+          },
+          yAxis: {
+            title: {
+              text: '电流强度 (千安)'
+            },
+            plotLines: [{
+              value: 0,
+              width: 1,
+              color: '#808080'
+            }]
+          },
+          tooltip: {
+            valueSuffix: '°C'
+          },
+          legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+          },
+          series: [{
+            name: '电流强度',
+            data: this.peak
+          }]
+        },
         cityList: [
           {
             value: 'New York',
@@ -251,10 +294,20 @@
             date: '2016-10-04'
           }
         ],
-        data2: []
+        data2: [],
+        data0: [],
+
       }
     },
     methods: {
+      updateCredits: function() {
+        var chart = this.$refs.highcharts.chart;
+        chart.credits.update({
+          style: {
+            color: '#' + (Math.random() * 0xffffff | 0).toString(16)
+          }
+        });
+      },
       dealSelect (name) {
         switch (name) {
           case 'logout':
@@ -276,8 +329,27 @@
       },
       getTerminalData(){
         terminal2().then(res=>{
-          console.log(res)
           this.data2 = res
+          console.log(res)
+          }
+        ).catch(err => {
+          console.error(err)
+        })
+      },
+      getTerminal1Data(){
+        terminal().then(res=>{
+          this.data0 = res
+          console.log(res[0].date)
+          var miao = []
+          var miaodate = []
+          for(var i = 0; i < 30; i++){
+            miao.push(res[i].peak)
+            miaodate.push(res[i].date)
+          }
+          this.date = miaodate
+          this.peak = miao
+          console.log(this.peak)
+          console.log(this.date)
           }
         ).catch(err => {
           console.error(err)
@@ -286,6 +358,7 @@
     },
     mounted () {
       this.getTerminalData()
+      this.getTerminal1Data()
     },
     created () {
       console.log(this.$session.get('groups'))
@@ -296,6 +369,7 @@
       //     this.$router.push({name: 'Login'})
       //   }
       // }).catch(err => {})
+
     }
   }
 </script>

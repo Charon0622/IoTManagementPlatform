@@ -1,6 +1,7 @@
 <template>
   <Row>
     <div>
+
         <vue-highcharts :options="options" ref="lineCharts"></vue-highcharts>
     </div>
   </Row>
@@ -9,44 +10,46 @@
 <script>
   import VueHighcharts from 'vue2-highcharts'
   const asyncData = {
-    name: 'Tokyo',
+    name: '电流变化',
     marker: {
       symbol: 'square'
     },
-    data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, {
-      y: 26.5,
-      marker: {
-        symbol: 'url(http://www.highcharts.com/demo/gfx/sun.png)'
-      }
-    }, 23.3, 18.3, 13.9, 9.6]
+    data: [1,2,3,4,5]
   }
   export default{
+    props:{
+      data0:{
+        type:Array,
+        required:true
+      }
+    },
     components: {
       VueHighcharts
     },
     data(){
       return{
+        peak:[],
+        date:[],
         options: {
           chart: {
             type: 'spline'
           },
           title: {
-            text: 'Monthly Average Temperature'
+            text: '电流变化'
           },
           subtitle: {
-            text: 'Source: WorldClimate.com'
+            text: '最新30条数据'
           },
           xAxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-              'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            categories: this.datae0.date
           },
           yAxis: {
             title: {
-              text: 'Temperature'
+              text: '千安'
             },
             labels: {
               formatter: function () {
-                return this.value + '°';
+                return this.value ;
               }
             }
           },
@@ -78,10 +81,16 @@
           lineCharts.addSeries(asyncData);
           lineCharts.hideLoading();
         }, 2000)
-      }
+      },
+        getpeak(){
+          console.log(data0)
+          console.log(parentmessage)
+          }
     },
+
     mounted(){
-      this.load();
+      this.load()
+      this.getpeak()
     }
   }
 </script>
