@@ -145,45 +145,49 @@
   import my_header from "./Header.vue"
   import my_sider from "./Sider.vue"
   import { logout, isLogin, terminal2, terminal } from '../service/apis'
+  const asyncData = {
+    name: '电流强度',
+    marker: {
+      symbol: 'square'
+    },
+    data: []
+  }
   export default {
     components: {VueHighcharts,  my_header, my_sider},
     name: "dashboard",
 
     data () {
       return {
-        date:[],
-        peak:[],
         options: {
+          chart: {
+            type: 'spline'
+          },
           title: {
-            text: 'Monthly Average Temperature',
-            x: -20 //center
+            text: '最新30条电流数据'
           },
           xAxis: {
-            categories: this.date
+            categories:[]
           },
           yAxis: {
-            title: {
-              text: '电流强度 (千安)'
-            },
-            plotLines: [{
-              value: 0,
-              width: 1,
-              color: '#808080'
-            }]
+            value:[]
           },
           tooltip: {
-            valueSuffix: '°C'
+            crosshairs: true,
+            shared: true
           },
-          legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            borderWidth: 0
+          credits: {
+            enabled: false
           },
-          series: [{
-            name: '电流强度',
-            data: this.peak
-          }]
+          plotOptions: {
+            spline: {
+              marker: {
+                radius: 4,
+                lineColor: '#666666',
+                lineWidth: 1
+              }
+            }
+          },
+          series: []
         },
         cityList: [
           {
@@ -296,17 +300,17 @@
         ],
         data2: [],
         data0: [],
-
+        count: 1,
       }
     },
     methods: {
-      updateCredits: function() {
-        var chart = this.$refs.highcharts.chart;
-        chart.credits.update({
-          style: {
-            color: '#' + (Math.random() * 0xffffff | 0).toString(16)
-          }
-        });
+      load(){
+        let lineCharts = this.$refs.lineCharts;
+        lineCharts.delegateMethod('showLoading', 'Loading...');
+        setTimeout(() => {
+          lineCharts.addSeries(asyncData);
+          lineCharts.hideLoading();
+        }, 2000)
       },
       dealSelect (name) {
         switch (name) {
@@ -317,7 +321,7 @@
       },
       userLogout () {
         logout().then(res => {
-          console.log(res)
+          // console.log(res)
           res = JSON.parse(res)
           if (res.status === 'OK') {
             this.$session.remove('username')
@@ -330,38 +334,78 @@
       getTerminalData(){
         terminal2().then(res=>{
           this.data2 = res
-          console.log(res)
+          // console.log(res)
           }
         ).catch(err => {
           console.error(err)
         })
       },
-      getTerminal1Data(){
+      timer() {
+        if (this.count > 0) {
+          this.count++;
+        }
+        var miao = []
+        var miaodate = []
+        // console.log(this.count)
         terminal().then(res=>{
-          this.data0 = res
-          console.log(res[0].date)
-          var miao = []
-          var miaodate = []
-          for(var i = 0; i < 30; i++){
-            miao.push(res[i].peak)
-            miaodate.push(res[i].date)
-          }
-          this.date = miaodate
-          this.peak = miao
-          console.log(this.peak)
-          console.log(this.date)
+            this.data0 = res
+            // console.log(res[0].date)
+            for(var i = 0; i < 30; i++){
+              miao.push(res[i].peak)
+              miaodate.push(res[i].date)
+            }
+            this.peak = miao
+            console.log(this.peak)
+            console.log(miaodate)
           }
         ).catch(err => {
           console.error(err)
         })
+        return miaodate
+      },
+      timervalue() {
+        if (this.count > 0) {
+          this.count++;
+        }
+        var miao = []
+        var miaodate = []
+        // console.log(this.count)
+        terminal().then(res=>{
+            this.data0 = res
+            // console.log(res[0].date)
+            for(var i = 0; i < 30; i++){
+              miao.push(res[i].peak)
+              miaodate.push(res[i].date)
+            }
+            this.peak = miao
+            // console.log(this.peak)
+            // console.log(miaodate)
+          }
+        ).catch(err => {
+          console.error(err)
+        })
+        return miao
       }
     },
     mounted () {
+      this.load()
       this.getTerminalData()
-      this.getTerminal1Data()
+      this.$nextTick(function () {
+          setInterval(this.timer, 1000);
+        setInterval(this.timervalue, 1000);
+        })
+    },
+    beforeMount(){
+      var date = this.timer();
+      var peak = this.timervalue();
+      console.log(date)
+      console.log(peak)
+      this.options['xAxis']['categories'] = date;
+      //this.options['yAxis']['value'] = peak;
+      asyncData.data = peak
     },
     created () {
-      console.log(this.$session.get('groups'))
+      // console.log(this.$session.get('groups'))
       // isLogin(this.$session.get('username')).then(res => {
       //   console.log(res)
       //   res = JSON.parse(res)
