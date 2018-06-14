@@ -66,6 +66,6 @@ module.exports = {
     // Set to `true` or `false` to always turn it on or off
     bundleAnalyzerReport: process.env.npm_config_report
   },
-  baseUrl: 'http://10.60.38.173:8000/',
+  baseUrl: 'http://10.60.38.173:8212/',
   dataBaseUrl: 'http://10.60.38.173:8000/'
 }
