@@ -146,7 +146,7 @@
   import my_sider from "./Sider.vue"
   import { logout, isLogin, terminal2, terminal } from '../service/apis'
   const asyncData = {
-    name: '电流强度',
+    name: '电流强度(千安)',
     marker: {
       symbol: 'square'
     },
@@ -169,7 +169,7 @@
             categories:[]
           },
           yAxis: {
-            value:[]
+            values:[]
           },
           tooltip: {
             crosshairs: true,
@@ -398,11 +398,12 @@
     beforeMount(){
       var date = this.timer();
       var peak = this.timervalue();
+      date=date.reverse()
       console.log(date)
       console.log(peak)
       this.options['xAxis']['categories'] = date;
       //this.options['yAxis']['value'] = peak;
-      asyncData.data = peak
+      asyncData.data = peak.reverse()
     },
     created () {
       // console.log(this.$session.get('groups'))
