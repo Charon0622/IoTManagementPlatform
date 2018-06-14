@@ -107,7 +107,7 @@ public class CassandraConnector {
     public void insertTestData(){
 //        List<String> data = new ArrayList<String>();
 //        data.add("INSERT INTO terminal (terminal_description, peak, lasting_time, polarity, date, unit1, unit2)"
-//                + " VALUES('4#雷电分析仪',2.1,372,'正','2018-03-5 06:51:58','千安','微秒');");
+//                + " VALUES('4#雷电分析仪',2.1,372,'正','2018-03-05 06:51:58','千安','微秒');");
 //        data.add("INSERT INTO terminal (terminal_description, peak, lasting_time, polarity, date, unit1, unit2)"
 //                + " VALUES('4#雷电分析仪',1.3,598,'正','2018-03-05 06:39:35','千安','微秒');");
 //        for(int i = 0; i < data.size(); i++){

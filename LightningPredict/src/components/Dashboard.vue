@@ -1,35 +1,27 @@
+
+
+
 <template>
   <div>
-      <Header>
-        <Menu mode="horizontal" @on-select="dealSelect">
-          <div class="demo-avatar user-div">
-            <span class="greeting">Hello, Ygritte</span>
-          </div>
-          <div class="layout-nav">
-            <MenuItem name="logout">
-              <Icon type="person"></Icon>
-              Logout
-            </MenuItem>
-          </div>
-        </Menu>
-      </Header>
+    <my_header></my_header>
      <Row>
-       <Col span="22" offset="1">
-      <Tabs value="name1" type="card" class="a">
+       <my_sider></my_sider>
+       <Col span="18" offset="1">
+        <Tabs :animated="false" value="name1" type="card" class="a">
         <TabPane label="大气电场实时曲线监测" name="name1">
           <Row>
-            <Col span="8">
-          <Row class="c">
+            <Col span="9">
+              <Row class="c">
             <Col span="5">
               <div class="b">首选站点</div>
             </Col>
-            <Col span="5" >
+            <Col span="8" >
             <Select v-model="model1" style="width:100px" placement="top"	>
               <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
             </Col>
           </Row>
-          <Row>
+              <Row>
             <Col span="24">
             <Card dis-hover>
               <Row>
@@ -51,9 +43,9 @@
             </Card>
             </Col>
           </Row>
-            <Row>
+              <Row>
               <Col>
-              <Tabs type="card" class="d">
+              <Tabs :animated="false" type="card" class="d">
                 <TabPane label="预警信息查询">
                   <Table :columns="columns1" :data="data1" size="small"></Table>
                 </TabPane>
@@ -119,11 +111,21 @@
               </Col>
             </Row>
             </Col>
+            <Col span="14" offset="1">
+            </Col>
           </Row>
         </TabPane>
         <TabPane label="列表监测与设置" name="name2">
-          <Tabs type="card">
-            <TabPane label="大气电场实时监测列表"><Table :columns="columns2" :data="data2"></Table></TabPane>
+          <Tabs :animated="false" type="card">
+            <TabPane label="大气电场实时监测列表">
+              <Table :columns="columns2" :data="data2"></Table>
+              <Row>
+                <div>
+              <vue-highcharts :options="options" ref="lineCharts"></vue-highcharts>
+                </div>
+              </Row>
+              <Graph v-bind:data0="data0" class="e"></Graph>
+            </TabPane>
             <TabPane label="雷达系统参数设置">标签二的内容</TabPane>
             <TabPane label="闪电定位系统设置">标签三的内容</TabPane>
             <TabPane label="网络化预警参数设置">标签四的内容</TabPane>
@@ -137,15 +139,56 @@
 </template>
 
 <script>
-  import graph from "./Graph.vue"
-  import Graph from "./Graph";
-  import { logout, isLogin } from '../service/apis'
-
+  import VueHighcharts from 'vue2-highcharts'
+  //import graph from "./Graph.vue"
+  //import Graph from "./Graph"
+  import my_header from "./Header.vue"
+  import my_sider from "./Sider.vue"
+  import { logout, isLogin, terminal2, terminal } from '../service/apis'
+  const asyncData = {
+    name: '电流强度(千安)',
+    marker: {
+      symbol: 'square'
+    },
+    data: []
+  }
   export default {
-    components: {Graph},
+    components: {VueHighcharts,  my_header, my_sider},
     name: "dashboard",
+
     data () {
       return {
+        options: {
+          chart: {
+            type: 'spline'
+          },
+          title: {
+            text: '最新30条电流数据'
+          },
+          xAxis: {
+            categories:[]
+          },
+          yAxis: {
+            values:[]
+          },
+          tooltip: {
+            crosshairs: true,
+            shared: true
+          },
+          credits: {
+            enabled: false
+          },
+          plotOptions: {
+            spline: {
+              marker: {
+                radius: 4,
+                lineColor: '#666666',
+                lineWidth: 1
+              }
+            }
+          },
+          series: []
+        },
         cityList: [
           {
             value: 'New York',
@@ -177,12 +220,64 @@
         ],
         columns2: [
           {
-            title: 'Name',
-            key: 'name'
+            title: 'terminal_description',
+            key: 'terminal_description'
           },
           {
-            title: 'Date',
-            key: 'date'
+            title: 'resistance',
+            key: 'resistance'
+          },
+          {
+            title: 'earthing',
+            key: 'earthing'
+          },
+          {
+            title: 'kk',
+            key: 'kk'
+          },
+          {
+            title: 'humidity',
+            key: 'humidity'
+          },
+          {
+            title: 'ib',
+            key: 'ib'
+          },
+          {
+            title: 'ub',
+            key: 'ub'
+          },
+          {
+            title: 'ia',
+            key: 'ia'
+          },
+          {
+            title: 'ua',
+            key: 'ua'
+          },
+          {
+            title: 'irA',
+            key: 'irA'
+          },
+          {
+            title: 'irB',
+            key: 'irB'
+          },
+          {
+            title: 'irC',
+            key: 'irC'
+          },
+          {
+            title: 'spd',
+            key: 'spd'
+          },
+          {
+            title: 'uc',
+            key: 'uc'
+          },
+          {
+            title: 'ic',
+            key: 'ic'
           }
         ],
         data1: [
@@ -203,27 +298,20 @@
             date: '2016-10-04'
           }
         ],
-        data2: [
-          {
-            name: 'John Brown',
-            date: '2016-10-03'
-          },
-          {
-            name: 'Jim Green',
-            date: '2016-10-01'
-          },
-          {
-            name: 'Joe Black',
-            date: '2016-10-02'
-          },
-          {
-            name: 'Jon Snow',
-            date: '2016-10-04'
-          }
-        ]
+        data2: [],
+        data0: [],
+        count: 1,
       }
     },
     methods: {
+      load(){
+        let lineCharts = this.$refs.lineCharts;
+        lineCharts.delegateMethod('showLoading', 'Loading...');
+        setTimeout(() => {
+          lineCharts.addSeries(asyncData);
+          lineCharts.hideLoading();
+        }, 2000)
+      },
       dealSelect (name) {
         switch (name) {
           case 'logout':
@@ -233,7 +321,7 @@
       },
       userLogout () {
         logout().then(res => {
-          console.log(res)
+          // console.log(res)
           res = JSON.parse(res)
           if (res.status === 'OK') {
             this.$session.remove('username')
@@ -242,10 +330,83 @@
         }).catch(err => {
           console.error(err)
         })
+      },
+      getTerminalData(){
+        terminal2().then(res=>{
+          this.data2 = res
+          // console.log(res)
+          }
+        ).catch(err => {
+          console.error(err)
+        })
+      },
+      timer() {
+        if (this.count > 0) {
+          this.count++;
+        }
+        var miao = []
+        var miaodate = []
+        // console.log(this.count)
+        terminal().then(res=>{
+            this.data0 = res
+            // console.log(res[0].date)
+            for(var i = 0; i < 30; i++){
+              miao.push(res[i].peak)
+              miaodate.push(res[i].date)
+            }
+            this.peak = miao
+            console.log(this.peak)
+            console.log(miaodate)
+          }
+        ).catch(err => {
+          console.error(err)
+        })
+        return miaodate
+      },
+      timervalue() {
+        if (this.count > 0) {
+          this.count++;
+        }
+        var miao = []
+        var miaodate = []
+        // console.log(this.count)
+        terminal().then(res=>{
+            this.data0 = res
+            // console.log(res[0].date)
+            for(var i = 0; i < 30; i++){
+              miao.push(res[i].peak)
+              miaodate.push(res[i].date)
+            }
+            this.peak = miao
+            // console.log(this.peak)
+            // console.log(miaodate)
+          }
+        ).catch(err => {
+          console.error(err)
+        })
+        return miao
       }
     },
+    mounted () {
+      this.load()
+      this.getTerminalData()
+      this.$nextTick(function () {
+          setInterval(this.timer, 1000);
+        setInterval(this.timervalue, 1000);
+        })
+    },
+    beforeMount(){
+      var date = this.timer();
+      var peak = this.timervalue();
+      date=date.reverse()
+      console.log(date)
+      console.log(peak)
+      this.options['xAxis']['categories'] = date;
+      //this.options['yAxis']['value'] = peak;
+      asyncData.data = peak.reverse()
+    },
     created () {
-      console.log(this.$session.get('groups'))
+      // console.log(this.$session.get('groups'))
       // isLogin(this.$session.get('username')).then(res => {
       //   console.log(res)
       //   res = JSON.parse(res)
@@ -253,60 +414,13 @@
       //     this.$router.push({name: 'Login'})
       //   }
       // }).catch(err => {})
+
     }
   }
 </script>
 
 <style scoped>
-  .layout{
-    background: #fff;
-    position: relative;
-    border-radius: 4px;
-    overflow: hidden;
-    height: 100%;
-  }
 
-  .layout-nav{
-    margin: 0 auto;
-    margin-right: 20px;
-    float: right;
-  }
-  .ivu-layout-header{
-    background: #ffffff;
-  }
-  .mybread{
-    float: left;
-  }
-  .ivu-menu-horizontal {
-    height: 64px;
-    line-height: 64px;
-  }
-  .user-avatar{
-    color: #f56a00;
-    background-color: #fde3cf;
-  }
-  .user-div{
-    float: left;
-    top:50%;
-  }
-  .greeting{
-    margin-left: 10px;
-  }
-  .background-size{
-    position:absolute;
-    width: 100%;
-    height: 100%;
-    background-color: #fff;
-  }
-  .main-size{
-    height: 100%;
-  }
-  .dashboard-search{
-    margin-top: 10px;
-    margin-bottom: 10px;
-    width: 200px;
-    align-self: flex-end;
-  }
   .a{
     background-color: #fff;
     margin-top: 10px;
@@ -323,6 +437,9 @@
   }
   .d{
     margin-top: 15px;
+  }
+  .e{
+    margin-top: 20px;
   }
 
   #level-1

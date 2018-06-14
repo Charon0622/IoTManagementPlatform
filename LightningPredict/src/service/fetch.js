@@ -1,6 +1,4 @@
-import { baseUrl } from '../../config/index'
-
-export default async(type = 'GET', url = '', data = {}, method = 'fetch') => {
+export default async(type = 'GET', baseUrl,  url = '', data = {}, method = 'fetch') => {
   type = type.toUpperCase();
   url = baseUrl + url;
 
@@ -55,7 +53,7 @@ export default async(type = 'GET', url = '', data = {}, method = 'fetch') => {
 
         let sendData = dataStr;
 
-        
+
         requestObj.open(type, url, true);
         if (method === 'multipart'){
           requestObj.setRequestHeader('Content-Type', 'multipart/form-data')
