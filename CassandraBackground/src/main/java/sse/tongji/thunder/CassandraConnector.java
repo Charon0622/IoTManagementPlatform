@@ -6,6 +6,10 @@ import com.datastax.driver.core.Session;
 import sse.tongji.thunder.model.Terminal;
 import sse.tongji.thunder.model.Terminal2;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -71,7 +75,7 @@ public class CassandraConnector {
                 "date timestamp," +
                 "unit1 text," +
                 "unit2 text," +
-                "PRIMARY KEY (terminal_description, date));"; //'2015-05-18 09:00'
+                "PRIMARY KEY (terminal_description, date))WITH CLUSTERING ORDER BY(date DESC);"; //'2015-05-18 09:00'
         session.execute(query);
     }
 
@@ -177,7 +181,7 @@ public class CassandraConnector {
         connector.createTerminal2Table();
 //        connector.insertTestData();
         connector.getTerminal2Data();
-
+//
         connector.close();
     }
 }
