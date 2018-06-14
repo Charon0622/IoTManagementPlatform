@@ -16,7 +16,7 @@
               <div class="b">首选站点</div>
             </Col>
             <Col span="8" >
-            <Select v-model="model1" style="width:100px" placement="top"	>
+            <Select style="width:100px" placement="top"	>
               <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
             </Col>
@@ -26,10 +26,15 @@
             <Card dis-hover>
               <Row>
                 <Col span="18">
-                <Card dis-hover>
-                  <p>Content of card</p>
-                  <p>Content of card</p>
-                  <p>Content of card</p>
+                <Card dis-hover class="card">
+                  <span class="zi">+07.34</span>
+                  <span class="zi2">Kv/m</span>
+                  <p class="zi2 zi3">
+                    <span>转速</span>
+                    <span style="margin-left: 5px">0</span>
+                    <span style="margin-left: 5px">闪电</span>
+                    <span style="margin-left: 5px">0</span>
+                  </p>
                 </Card>
                 </Col>
                 <Col span="4" offset="2">
@@ -116,17 +121,35 @@
           </Row>
         </TabPane>
         <TabPane label="列表监测与设置" name="name2">
-          <Tabs :animated="false" type="card">
+          <Tabs :animated="false" type="card"
+          >
             <TabPane label="大气电场实时监测列表">
-              <Table :columns="columns2" :data="data2"></Table>
               <Row>
+                <Col span="14" >
+              <Button class="shuaxin">刷新表格</Button>
+                </Col>
+              </Row>
+              <Table :columns="columns0" :data="data0"  height="600"></Table>
+              <Row>
+                <Row>
+                  <Col span="14" >
+                  <Button class="shuaxintu"> 刷新图</Button>
+                  </Col>
+                </Row>
                 <div>
               <vue-highcharts :options="options" ref="lineCharts"></vue-highcharts>
                 </div>
               </Row>
               <Graph v-bind:data0="data0" class="e"></Graph>
             </TabPane>
-            <TabPane label="雷达系统参数设置">标签二的内容</TabPane>
+            <TabPane label="雷达系统参数设置">
+              <Row>
+              <Col span="14" >
+              <Button class="shuaxin" @click="getTerminalData2">刷新表格</Button>
+              </Col>
+            </Row>
+              <Table :columns="columns2" :data="data2" @click="getTerminalData2"></Table>
+            </TabPane>
             <TabPane label="闪电定位系统设置">标签三的内容</TabPane>
             <TabPane label="网络化预警参数设置">标签四的内容</TabPane>
           </Tabs>
@@ -210,12 +233,45 @@
         model1: '',
         columns1: [
           {
-            title: 'Name',
-            key: 'name'
+            title: 'Time',
+            key: 'time'
           },
           {
-            title: 'Date',
+            title: 'Alarm',
+            key: 'alarm'
+          }
+        ],
+
+        columns0: [
+          {
+            title: 'terminal_description',
+            key: 'terminal_description'
+          },
+          {
+            title: 'peak',
+            key: 'peak'
+          },
+
+          {
+            title: 'lasting_time',
+            key: 'lasting_time'
+          },
+
+          {
+            title: 'polarity',
+            key: 'polarity'
+          },
+          {
+            title: 'date',
             key: 'date'
+          },
+          {
+            title: 'unit1',
+            key: 'unit1'
+          },
+          {
+            title: 'unit2',
+            key: 'unit2'
           }
         ],
         columns2: [
@@ -282,21 +338,33 @@
         ],
         data1: [
           {
-            name: 'John Brown',
-            date: '2016-10-03'
+            time: '2015-03-13 13:10:02',
+            alarm: '雷电三级预警'
           },
           {
-            name: 'Jim Green',
-            date: '2016-10-01'
+            time: '2015-03-13 13:10:02',
+            alarm: '雷电三级预警'
           },
           {
-            name: 'Joe Black',
-            date: '2016-10-02'
+            time: '2015-03-13 13:10:02',
+            alarm: '雷电三级预警'
           },
           {
-            name: 'Jon Snow',
-            date: '2016-10-04'
-          }
+            time: '2015-03-13 13:10:02',
+            alarm: '雷电三级预警'
+          },
+          {
+            time: '2015-03-13 13:10:02',
+            alarm: '雷电三级预警'
+          },
+          {
+            time: '2015-03-13 13:10:02',
+            alarm: '雷电三级预警'
+          },
+          {
+            time: '2015-03-13 13:10:02',
+            alarm: '雷电三级预警'
+          },
         ],
         data2: [],
         data0: [],
@@ -331,10 +399,19 @@
           console.error(err)
         })
       },
-      getTerminalData(){
+      getTerminalData2(){
         terminal2().then(res=>{
           this.data2 = res
           // console.log(res)
+          }
+        ).catch(err => {
+          console.error(err)
+        })
+      },
+      getTerminalData(){
+        terminal().then(res=>{
+            this.data0 = res
+            // console.log(res)
           }
         ).catch(err => {
           console.error(err)
@@ -388,8 +465,9 @@
       }
     },
     mounted () {
-      this.load()
-      this.getTerminalData()
+      this.load();
+      this.getTerminalData();
+      this.getTerminalData2();
       this.$nextTick(function () {
           setInterval(this.timer, 1000);
         setInterval(this.timervalue, 1000);
@@ -441,6 +519,22 @@
   .e{
     margin-top: 20px;
   }
+  .zi{
+    color: blue;
+    font-size: 43px;
+    font-weight: 600;
+  }
+  .zi2{
+    color: blue;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .zi3{
+    margin-left: 80px;
+  }
+  .card{
+    background-color:red;
+  }
 
   #level-1
   {
@@ -461,6 +555,15 @@
   #internet-high
   {
     background-color:#d6d6d6;
+  }
+  .shuaxin{
+    float: left;
+    margin-bottom: 10px;
+  }
+
+  .shuaxintu{
+    float: left;
+    margin-top: 10px;
   }
 
 </style>
