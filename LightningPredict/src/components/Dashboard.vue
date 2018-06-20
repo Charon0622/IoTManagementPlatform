@@ -126,16 +126,11 @@
             <TabPane label="大气电场实时监测列表">
               <Row>
                 <Col span="14" >
-              <Button class="shuaxin">刷新表格</Button>
+              <Button class="shuaxin" @click="getTerminalData2">刷新</Button>
                 </Col>
               </Row>
-              <Table :columns="columns0" :data="data0"  height="600"></Table>
+              <Table :columns="columns2" :data="data2"  height="600"></Table>
               <Row>
-                <Row>
-                  <Col span="14" >
-                  <Button class="shuaxintu"> 刷新图</Button>
-                  </Col>
-                </Row>
                 <div>
               <vue-highcharts :options="options" ref="lineCharts"></vue-highcharts>
                 </div>
@@ -145,10 +140,10 @@
             <TabPane label="雷达系统参数设置">
               <Row>
               <Col span="14" >
-              <Button class="shuaxin" @click="getTerminalData2">刷新表格</Button>
+              <Button class="shuaxin" @click="getTerminalData">刷新</Button>
               </Col>
             </Row>
-              <Table :columns="columns2" :data="data2" @click="getTerminalData2"></Table>
+              <Table :columns="columns0" :data="data0" ></Table>
             </TabPane>
             <TabPane label="闪电定位系统设置">标签三的内容</TabPane>
             <TabPane label="网络化预警参数设置">标签四的内容</TabPane>
@@ -469,8 +464,10 @@
       this.getTerminalData();
       this.getTerminalData2();
       this.$nextTick(function () {
-          setInterval(this.timer, 1000);
-        setInterval(this.timervalue, 1000);
+        setInterval(this.timer, 1000000);
+        setInterval(this.timervalue, 1000000);
+        setInterval(this.getTerminalData, 1000000);
+        setInterval(this.getTerminalData2, 1000000);
         })
     },
     beforeMount(){
