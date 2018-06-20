@@ -178,10 +178,11 @@
       return {
         options: {
           chart: {
-            type: 'spline'
+            //type: 'spline'
+            zoomType: 'x'
           },
           title: {
-            text: '最新30条电流数据'
+            text: '最新电流数据'
           },
           xAxis: {
             categories:[]
@@ -416,47 +417,47 @@
         if (this.count > 0) {
           this.count++;
         }
-        var miao = []
-        var miaodate = []
+        var temp = []
+        var tempdate = []
         // console.log(this.count)
         terminal().then(res=>{
             this.data0 = res
             // console.log(res[0].date)
-            for(var i = 0; i < 30; i++){
-              miao.push(res[i].peak)
-              miaodate.push(res[i].date)
+            for(var i = 0; i < res.length; i++){
+              temp.push(res[i].peak)
+              tempdate.push(res[i].date)
             }
-            this.peak = miao
-            console.log(this.peak)
-            console.log(miaodate)
+            this.peak = temp
+            //console.log(this.peak)
+            //console.log(miaodate)
           }
         ).catch(err => {
           console.error(err)
         })
-        return miaodate
+        return tempdate
       },
       timervalue() {
         if (this.count > 0) {
           this.count++;
         }
-        var miao = []
-        var miaodate = []
+        var temp = []
+        var tempdate = []
         // console.log(this.count)
         terminal().then(res=>{
             this.data0 = res
             // console.log(res[0].date)
-            for(var i = 0; i < 30; i++){
-              miao.push(res[i].peak)
-              miaodate.push(res[i].date)
+            for(var i = 0; i < res.length; i++){
+              temp.push(res[i].peak)
+              tempdate.push(res[i].date)
             }
-            this.peak = miao
+            this.peak = temp
             // console.log(this.peak)
             // console.log(miaodate)
           }
         ).catch(err => {
           console.error(err)
         })
-        return miao
+        return temp
       }
     },
     mounted () {
@@ -469,16 +470,20 @@
         setInterval(this.getTerminalData, 1000000);
         setInterval(this.getTerminalData2, 1000000);
         })
+      //var date = this.timer();
+      var peak = this.timervalue();
+      //console.log(date)
+      console.log(peak)
+      //this.options['xAxis']['categories'] = date;
+      asyncData.data = peak
     },
     beforeMount(){
-      var date = this.timer();
-      var peak = this.timervalue();
-      date=date.reverse()
-      console.log(date)
-      console.log(peak)
+       var date = this.timer();
+      // var peak = this.timervalue();
+       console.log(date)
+      // console.log(peak)
       this.options['xAxis']['categories'] = date;
-      //this.options['yAxis']['value'] = peak;
-      asyncData.data = peak.reverse()
+      // asyncData.data = peak
     },
     created () {
       // console.log(this.$session.get('groups'))
