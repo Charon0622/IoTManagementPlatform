@@ -465,10 +465,10 @@
       this.getTerminalData();
       this.getTerminalData2();
       this.$nextTick(function () {
-        setInterval(this.timer, 1000000);
-        setInterval(this.timervalue, 1000000);
-        setInterval(this.getTerminalData, 1000000);
-        setInterval(this.getTerminalData2, 1000000);
+        setInterval(this.timer, 10000);
+        setInterval(this.timervalue, 10000);
+        setInterval(this.getTerminalData, 10000);
+        setInterval(this.getTerminalData2, 10000);
         })
       //var date = this.timer();
       var peak = this.timervalue();
