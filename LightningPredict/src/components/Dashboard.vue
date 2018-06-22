@@ -460,8 +460,7 @@
         return temp
       }
     },
-    mounted () {
-      this.load();
+    created () {
       this.getTerminalData();
       this.getTerminalData2();
       this.$nextTick(function () {
@@ -485,15 +484,8 @@
       this.options['xAxis']['categories'] = date;
       // asyncData.data = peak
     },
-    created () {
-      // console.log(this.$session.get('groups'))
-      // isLogin(this.$session.get('username')).then(res => {
-      //   console.log(res)
-      //   res = JSON.parse(res)
-      //   if (res.status === 'FAIL') {
-      //     this.$router.push({name: 'Login'})
-      //   }
-      // }).catch(err => {})
+    mounted () {
+      this.load()
 
     }
   }
