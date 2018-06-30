@@ -178,8 +178,8 @@
       return {
         options: {
           chart: {
-            //type: 'spline'
-            zoomType: 'x'
+            type: 'spline'
+            //zoomType: 'x'
           },
           title: {
             text: '最新电流数据'
@@ -464,29 +464,25 @@
       this.getTerminalData();
       this.getTerminalData2();
       this.$nextTick(function () {
-        setInterval(this.timer, 10000);
-        setInterval(this.timervalue, 10000);
-        setInterval(this.getTerminalData, 10000);
-        setInterval(this.getTerminalData2, 10000);
+        console.log("hhhhhhhhhhhhh")
+        setInterval(this.timer, 2000);
+        setInterval(this.timervalue, 2000);
+        setInterval(this.getTerminalData, 2000);
+        setInterval(this.getTerminalData2, 2000);
         })
-      //var date = this.timer();
-      var peak = this.timervalue();
-      //console.log(date)
-      console.log(peak)
-      //this.options['xAxis']['categories'] = date;
-      asyncData.data = peak
+
     },
     beforeMount(){
+      var peak = this.timervalue();
+      console.log(peak)
+      asyncData.data = peak
        var date = this.timer();
-      // var peak = this.timervalue();
-       console.log(date)
-      // console.log(peak)
+      console.log(date)
       this.options['xAxis']['categories'] = date;
-      // asyncData.data = peak
     },
     mounted () {
       this.load()
-
+  console.log("miaomiaomiao")
     }
   }
 </script>
