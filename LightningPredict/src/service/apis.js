@@ -9,9 +9,9 @@ var isLogin = (username) => fetch('GET', baseUrl, 'is_login/?username=' + userna
 
 var register = (username, password) => fetch('POST', baseUrl, 'register/', {username: username, password: password})
 
-var terminal = () => fetch('GET', dataBaseUrl, 'terminal/getall'+'?t=' + Math.random(), {})
+var terminal = () => fetch('GET', dataBaseUrl, 'terminal/getall?' + Math.random(), {})
 
-var terminal2 = () => fetch('GET', dataBaseUrl, 'terminal2/getall'+'?t='+ Math.random(), {})
+var terminal2 = () => fetch('GET', dataBaseUrl, 'terminal2/getall?' + Math.random(), {})
 
 export {
   login,

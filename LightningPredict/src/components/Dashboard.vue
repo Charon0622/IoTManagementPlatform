@@ -132,7 +132,7 @@
               <Table :columns="columns2" :data="data2"  height="600"></Table>
               <Row>
                 <div>
-              <vue-highcharts :options="options" ref="lineCharts"></vue-highcharts>
+              <vue-highcharts :options="options" ref="lineCharts" v-if="showChart"></vue-highcharts>
                 </div>
               </Row>
               <Graph v-bind:data0="data0" class="e"></Graph>
@@ -178,8 +178,8 @@
       return {
         options: {
           chart: {
-            type: 'spline'
-            //zoomType: 'x'
+            //type: 'spline'
+            zoomType: 'x'
           },
           title: {
             text: '最新电流数据'
@@ -365,55 +365,62 @@
         data2: [],
         data0: [],
         count: 1,
+        intervalId: -1,
+        peak: -1,
+        xTime: [],
+        showChart: false
       }
     },
     methods: {
-      load(){
+      load(first){
         let lineCharts = this.$refs.lineCharts;
+
         lineCharts.delegateMethod('showLoading', 'Loading...');
+        lineCharts.getChart().update(this.options)
         setTimeout(() => {
+          lineCharts.removeSeries()
           lineCharts.addSeries(asyncData);
           lineCharts.hideLoading();
         }, 2000)
       },
-      dealSelect (name) {
-        switch (name) {
-          case 'logout':
-            this.userLogout()
-                break
-        }
-      },
-      userLogout () {
-        logout().then(res => {
-          // console.log(res)
-          res = JSON.parse(res)
-          if (res.status === 'OK') {
-            this.$session.remove('username')
-            this.$router.push({name: 'Login'})
-          }
-        }).catch(err => {
-          console.error(err)
-        })
-      },
-      getTerminalData2(){
+      async getTerminalData2(){
         terminal2().then(res=>{
           this.data2 = res
-          // console.log(res)
           }
         ).catch(err => {
           console.error(err)
         })
       },
-      getTerminalData(){
+      async getTerminalData(){
         terminal().then(res=>{
             this.data0 = res
-            // console.log(res)
           }
         ).catch(err => {
           console.error(err)
         })
       },
-      timer() {
+      async timer() {
+        if (this.count > 0) {
+          this.count++;
+        }
+        var temp = []
+        var tempdate = []
+        // console.log(this.count)
+        terminal().then(res=>{
+            this.data0 = res
+            // console.log(res[0].date)
+            for(var i = 0; i < res.length; i++){
+              temp.push(res[i].peak)
+              tempdate.push(res[i].date)
+            }
+            this.xTime = tempdate
+            this.options['xAxis']['categories'] = this.xTime
+          }
+        ).catch(err => {
+          console.error(err)
+        })
+      },
+      async timervalue() {
         if (this.count > 0) {
           this.count++;
         }
@@ -428,61 +435,54 @@
               tempdate.push(res[i].date)
             }
             this.peak = temp
-            //console.log(this.peak)
-            //console.log(miaodate)
-          }
-        ).catch(err => {
-          console.error(err)
-        })
-        return tempdate
-      },
-      timervalue() {
-        if (this.count > 0) {
-          this.count++;
-        }
-        var temp = []
-        var tempdate = []
-        // console.log(this.count)
-        terminal().then(res=>{
-            this.data0 = res
-            // console.log(res[0].date)
-            for(var i = 0; i < res.length; i++){
-              temp.push(res[i].peak)
-              tempdate.push(res[i].date)
-            }
-            this.peak = temp
+            asyncData.data = this.peak
+            // console.log('pack', this.peak)
             // console.log(this.peak)
             // console.log(miaodate)
           }
         ).catch(err => {
           console.error(err)
         })
-        return temp
+        // return temp
+      },
+      async refresh() {
+        await this.timer()
+        await this.getTerminalData()
+        await this.getTerminalData2()
+        await this.timervalue();
+        // console.log(this.xTime)
+        asyncData.data = this.peak
+        this.load(false)
+        // console.log(this.$refs.lineCharts)
       }
     },
-    created () {
+    mounted () {
+      this.showChart = true
       this.getTerminalData();
       this.getTerminalData2();
-      this.$nextTick(function () {
-        console.log("hhhhhhhhhhhhh")
-        setInterval(this.timer, 2000);
-        setInterval(this.timervalue, 2000);
-        setInterval(this.getTerminalData, 2000);
-        setInterval(this.getTerminalData2, 2000);
-        })
-
+      this.refresh()
+      this.intervalId = setInterval(this.refresh, 5000)
+      //var date = this.timer();
+      //console.log(date)
+      // console.log(this.peak)
+      //this.options['xAxis']['categories'] = date;
     },
     beforeMount(){
-      var peak = this.timervalue();
-      console.log(peak)
-      asyncData.data = peak
-       var date = this.timer();
-      console.log(date)
-      this.options['xAxis']['categories'] = date;
+      this.timer()
     },
-    mounted () {
-      this.load()
-  console.log("miaomiaomiao")
+    created () {
+      // console.log(this.$session.get('groups'))
+      // isLogin(this.$session.get('username')).then(res => {
+      //   console.log(res)
+      //   res = JSON.parse(res)
+      //   if (res.status === 'FAIL') {
+      //     this.$router.push({name: 'Login'})
+      //   }
+      // }).catch(err => {})
+
+    },
+    beforeDestroy () {
+      clearInterval(this.intervalId)
     }
   }
 </script>

@@ -15,8 +15,31 @@
 </template>
 
 <script>
+    import { logout } from "../service/apis";
+
     export default {
-        name: "header"
+      name: "header",
+      methods: {
+        dealSelect (name) {
+          switch (name) {
+            case 'logout':
+              this.userLogout()
+              break
+          }
+        },
+        userLogout () {
+          logout().then(res => {
+            // console.log(res)
+            res = JSON.parse(res)
+            if (res.status === 'OK') {
+              this.$session.remove('username')
+              this.$router.push({name: 'Login'})
+            }
+          }).catch(err => {
+            console.error(err)
+          })
+        }
+      }
     }
 </script>
 

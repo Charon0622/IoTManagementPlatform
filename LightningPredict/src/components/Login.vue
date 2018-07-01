@@ -86,14 +86,17 @@
             this.$Notice.warning({
               title: 'Input username'
             })
+            return
           } else if (this.newPassword === '') {
             this.$Notice.warning({
               title: 'Input password'
             })
+            return
           } else if (this.newPassword !== this.reNewPassword) {
             this.$Notice.warning({
               title: 'Password doesn\'t match'
             })
+            return
           }
 
           register(this.newUsername, this.newPassword).then(res => {
@@ -106,9 +109,14 @@
               this.username = this.newUsername
               this.password = this.newPassword
               this.login()
-            } else if (this.msg === 'User exists') {
+            } else if (this.msg === 'FAIL') {
               this.$Notice.warning({
                 title: this.newUsername + ' exists'
+              })
+            }
+            if (res.status === 'FAIL') {
+              this.$Notice.error({
+                title: 'Register Fail'
               })
             }
           }).catch(err => {
